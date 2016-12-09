@@ -1,0 +1,60 @@
+<style>
+body
+{
+	background: #FFF;
+}
+
+img
+{
+	position: absolute;
+	width: 8px;
+	height: 8px;
+}
+</style>
+<script>
+var i;
+var x, y;
+var left, top;
+var n;
+var s;
+
+for(i=1; i<16; i++)
+{
+n = 0;
+
+for(y=0; y<2; y++)
+for(x=0; x<2; x++)
+{
+	left = i*16 + x*8     + 100;
+	top = y * 8           + 100;
+
+	if(i & Math.pow(2, n++))
+		s="T1.bmp";
+	else
+		s="X.bmp";
+
+	document.write("<img style='left:" + left + "px;top:" + top + "px' src=" + s + ">")
+}
+}
+
+
+
+for(i=1; i<16; i++)
+{
+n = 0;
+
+for(y=0; y<2; y++)
+for(x=0; x<2; x++)
+{
+	left = i*16 + x*8     + 100 + 16*15;
+	top = y * 8           + 100;
+
+	if(i & Math.pow(2, n++))
+		s="T2.bmp";
+	else
+		s="X.bmp";
+
+	document.write("<img style='left:" + left + "px;top:" + top + "px' src=" + s + ">")
+}
+}
+</script>

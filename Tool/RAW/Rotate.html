@@ -1,0 +1,52 @@
+<html>
+<body>
+<style>
+
+
+div
+{
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	background: url(T.bmp);
+	overflow: hidden;
+}
+
+.T1
+{
+	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+}
+
+.T2
+{
+	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+}
+
+.T3
+{
+	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+}
+</style>
+<span style="width:10000px"></span>
+<script>
+var x,y;
+var i;
+
+var left, top;
+var px, py;
+
+for(i=0; i<4; i++)
+for(y=0; y<2; y++)
+for(x=0; x<14; x++)
+{
+	left = 10 + i*448 + y*224 + x*16;
+	top = 100;
+
+	px = -x * 16;
+	py = -y * 16;
+
+	document.write("<div style='left:" + left + "px;top:" + top + "px;background-position:" + px + "px " + py + "px' class=T" + i + "></div>");
+}
+</script>
+</body>
+</html>

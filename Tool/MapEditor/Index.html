@@ -1,0 +1,291 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+<title>地图编辑器</title>
+<style>
+*
+{
+	position: absolute;
+}
+
+#divTile
+{
+	left: 10px;
+	top: 10px;
+	height: 32px;
+	width: 1152px;
+	background: #000;
+}
+
+#divTile div
+{
+	width: 32px;
+	height: 32px;
+	border-left: solid 1px red;
+	background: url(Terr.png);
+}
+
+
+#selStage
+{
+	left: 10px;
+	top: 50px;
+}
+
+#imgMap
+{
+	left: 10px;
+	top: 100px;
+	border: solid 1px #000;
+}
+
+#divMap
+{
+	left: 42px;
+	top: 132px;
+	width: 418px;
+	height: 418px;
+	background: #000;
+	filter: alpha(opacity=70);
+}
+
+#divMap div
+{
+	width: 32px;
+	height: 32px;
+	border: dotted 1px #CCC;
+	background: url(Terr.png) no-repeat 0 -999px;
+}
+
+input
+{
+	left: 100px;
+	top: 50px;
+	width: 300px;
+}
+
+button
+{
+	left: 450px;
+	top: 50px;
+}
+</style>
+</head>
+
+<body>
+<div id="divTile"></div>
+<select id="selStage"></select>
+<img id="imgMap" width="512" height="480" />
+<div id="divMap"></div>
+<input type="text" id="txt" maxlength="20" />
+<button onclick="CopyData()">GetData</button>
+
+<script>
+SCREEN_PATH = "E:/MyGame/Emu/Nestopia/screenshots/";
+
+
+var data = [];
+
+function L(val)
+{
+	data = val.split('');
+	
+	var l = 189 * 35;
+	var ch, i
+
+	for(i=0; i<l; i++)
+	{
+		if(data[i])
+			data[i] = data[i].charCodeAt(0) - 65;
+		else
+			data[i] = 0;
+	}
+}
+</script>
+
+<script src="Map.dat"></script>
+<script>
+L(RES_DATA);
+
+
+
+var lock = [];
+var arrDIV = [];
+
+
+function init()
+{
+	var r, c;
+	var s = [];
+
+	// 地砖选择
+	for(c=0; c<36; c++)
+		s.push("<div tid=", c, " style='left:", 32*c, "px; background-position:", -32*c, "px 0px'></div>");
+
+	divTile.innerHTML = s.join('');
+	s = [];
+
+
+
+	// 地图编辑
+	for(r=0; r<13; r++)
+	for(c=0; c<13; c++)
+		s.push("<div style='left:", c*32, "px;top:", r*32, "px' col=", c, " row=", r, "></div>");
+
+	divMap.innerHTML = s.join('');
+	arrDIV = divMap.getElementsByTagName("div");
+
+
+
+	// 选关
+	selStage.onchange = SelectStage;
+	for(var i=1; i<36; i++)
+		selStage.options.add(new Option("Stage " + i, i));
+	selStage.onchange();
+}
+init();
+
+
+var stg;
+
+function SelectStage()
+{
+	var i;
+	stg = this.value - 1;
+
+	var n = 189 * stg;
+
+	for(i=0; i<169; i++)
+		fill(i%13, ~~(i/13), data[n++]);
+
+
+	var s = "";
+	var T = ["0", "1", "2", "3"];
+
+	for(i=0; i<20; i++)
+		s += (T[data[n++]] || "0");
+
+	txt.value = s;
+
+	imgMap.src = SCREEN_PATH + (stg+1) + ".bmp";
+
+
+	fill(0, 0, 0);
+	fill(6, 0, 0);
+	fill(12, 0, 0);
+	fill(4, 12, 0);
+
+	fill(5, 11, 29);
+	fill(6, 11, 33);
+	fill(7, 11, 25);
+
+	fill(5, 12, 31);
+	fill(7, 12, 26);
+
+	fill(6, 12, 2);
+}
+
+var curDIV;
+var curTile = 0;
+
+function fill(col, row, tile)
+{
+	var id = row * 13 + col;
+
+	var left = -32 * (tile-1);
+
+	arrDIV[id].style.backgroundPosition = left + "px 0px";
+
+	var n = (13 * 13 + 20) * stg;
+	data[n + id] = tile;
+}
+
+
+function CopyData()
+{
+	var s;
+	var arr = [];
+	var i;
+
+	for(var i=0; i<data.length; i++)
+		arr[i] = data[i] + 65;
+
+	s = "var RES_DATA='" + String.fromCharCode.apply(null, arr) + "';";
+	s = s.replace(/\\/g, "\\\\");
+
+	window.clipboardData.setData("Text", s)
+}
+
+
+txt.onchange = function()
+{
+	var n = 189 * stg + 169;
+	var i;
+	var val = txt.value;
+	var k;
+
+	for(i=0; i<20; i++)
+	{
+		k = +val.substr(i, 1);
+		if(k > 3 || isNaN(k))
+			k = 0;
+		data[n++] = k;
+	}
+};
+
+
+divTile.onclick = function()
+{
+	var e = event.srcElement;
+	curTile = +e.tid + 1;
+}
+
+divMap.onmouseover = function()
+{
+	curDIV = event.srcElement;
+	curDIV.style.borderColor = "red";
+
+	if(bDraw)
+		draw(curTile);
+}
+
+divMap.onmouseout = function()
+{
+	curDIV = event.srcElement;
+	curDIV.style.borderColor = "#CCC";
+}
+
+
+function draw(tile)
+{
+	if(curDIV)
+		fill(+curDIV.col, +curDIV.row, tile);
+}
+
+
+var bDraw;
+document.onkeydown = function()
+{
+	if(event.keyCode == 32)
+	{
+		if(curTile > 0)
+		{
+			bDraw = true;
+			draw(curTile);
+		}
+	}
+	else if(event.keyCode == 27)
+	{
+		draw(0);
+	}
+}
+document.onkeyup = function()
+{
+	if(event.keyCode == 32)
+		bDraw = false;
+}
+</script>
+</body>
+</html>

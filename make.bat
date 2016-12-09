@@ -1,0 +1,23 @@
+java -jar D:\MyTool\closure_complie\compiler.jar ^
+	--compilation_level=ADVANCED_OPTIMIZATIONS ^
+	--js=src\WebPlay.cls ^
+	--js=src\Util\Misc.js ^
+	--js=src\Util\Tick.js ^
+	--js=src\Util\Timer.js ^
+	--js=src\Const.js ^
+	--js=src\App.cls ^
+	--js=src\Scene.cls ^
+	--js=src\Game.cls ^
+	--js=src\Object\Bonus.cls ^
+	--js=src\Object\Boom.cls ^
+	--js=src\Object\Bullet.cls ^
+	--js=src\Object\Tank.cls ^
+	--js=src\Object\MyTank.cls ^
+	--js=src\Object\NPCTank.cls ^
+	--js=src\UI\UIOpen.cls ^
+	--js=src\UI\UIGame.cls ^
+	--js=src\UI\UIScore.cls ^
+	--js=src\UI\UIOver.cls ^
+	--js=src\Map.dat ^
+	--js_output_file=release/App.js
+pause
